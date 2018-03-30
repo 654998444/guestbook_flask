@@ -1,0 +1,5 @@
+*.a
+*.pyc
+env/
+pycache/
+*.swp
