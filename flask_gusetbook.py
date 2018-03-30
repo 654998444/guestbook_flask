@@ -10,5 +10,9 @@ bootstrap = Bootstrap(app)
 def hello_world():
 		return render_template('index.html')
 
+@app.route('/treehole')
+def tree_hole():
+		return render_template('treehole.html') 
+
 if __name__ == '__main__':
 		app.run(host='0.0.0.0', port=8080, debug=True)
