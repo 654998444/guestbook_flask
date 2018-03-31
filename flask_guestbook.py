@@ -25,7 +25,9 @@ def DBconnect(Guest_object):
 		Column('id', Integer, primary_key=True),
 		Column('name', Text, nullable=False),
 		Column('message', Text, nullable=False),
-		Column('time', DateTime, default=datetime.now))
+		Column('time', DateTime, default=datetime.now),
+		mysql_default_charset='utf8')  # very very very important in create a table supporting utf8
+
 	metadata.create_all()
 	clear_mappers()
 	mapper(Guest_object, guest_table)  # build mapper
@@ -47,8 +49,8 @@ def tree_hole():
 		if request.method == 'POST':
 			data = request.values
 			_ = Guest()
-			_.name=data['name']#.encode('utf-8')
-			_.message=data['message']#.encode('utf-8')
+			_.name=data['name'].encode('utf-8')  # with question if it is essential or not
+			_.message=data['message'].encode('utf-8')
 			dbsession.add(_)
 			dbsession.commit()
 		items = dbsession.query(Guest).all()
