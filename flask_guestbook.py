@@ -16,7 +16,7 @@ bootstrap = Bootstrap(app)
 
 def DBconnect(Guest_object):
 	engine = create_engine('mysql+pymysql://root:123456@localhost:3306\
-			/guestbook?charset=utf8', echo=True)  
+			/guestbook?charset=utf8mb4', echo=True)  
 	# engine add sql data with default charset utf8
 
 	# initial table guestbook if not exist 
@@ -28,7 +28,7 @@ def DBconnect(Guest_object):
 		Column('name', Text, nullable=False),
 		Column('message', Text, nullable=False),
 		Column('time', DateTime, default=datetime.now),
-		mysql_default_charset='utf8')  # very very very important in create a table supporting utf8
+		mysql_default_charset='utf8mb4')  # very very very important in create a table supporting utf8
 
 	metadata.create_all()  
 	# guest_table = Table('guestbook', metadata, autoload=True)  
