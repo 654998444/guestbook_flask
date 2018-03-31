@@ -4,8 +4,9 @@ from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, Unicode, DateTime, Text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import MetaData, Table, Column, String,\
+			 Integer, Unicode, DateTime, Text
+from sqlalchemy.orm import sessionmaker, mapper, clear_mappers
 from datetime import datetime
 
 Base = declarative_base()
@@ -13,22 +14,28 @@ Base = declarative_base()
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
-def DBconnect():
-	engine = create_engine('mysql+pymysql://root:123456@localhost:3306/guestbook?charset=utf8',
-		 echo=True)
+def DBconnect(Guest_object):
+	engine = create_engine('mysql+pymysql://root:123456@localhost:3306\
+			/guestbook?charset=utf8', echo=True)
+
+	# initial table guestbook if not exist
+	metadata = MetaData(bind=engine)
+	guest_table = Table(
+		'guestbook', metadata,
+		Column('id', Integer, primary_key=True),
+		Column('name', Text, nullable=False),
+		Column('message', Text, nullable=False),
+		Column('time', DateTime, default=datetime.now))
+	metadata.create_all()
+	clear_mappers()
+	mapper(Guest_object, guest_table)  # build mapper
+
 	DBSession = sessionmaker(bind=engine)
 	session = DBSession()
 	return session
 
-class guestbook(Base):
-	
-	__tablename__ = 'guestbook'
-
-	id = Column(Integer, primary_key=True)
-	name = Column(Unicode(64), nullable=False)
-	message = Column(Text, nullable=False)
-	time = Column(DateTime(), default=datetime.now)	
-	
+class Guest(object):
+	pass
 
 @app.route('/')
 def hello_world():
@@ -36,15 +43,15 @@ def hello_world():
 
 @app.route('/treehole', methods=['GET', 'POST'])
 def tree_hole():
-		dbsession = DBconnect()
+		dbsession = DBconnect(Guest)
 		if request.method == 'POST':
 			data = request.values
-			_ = guestbook()
-			_.name=data['name']
-			_.message=data['message']
+			_ = Guest()
+			_.name=data['name']#.encode('utf-8')
+			_.message=data['message']#.encode('utf-8')
 			dbsession.add(_)
 			dbsession.commit()
-		items = dbsession.query(guestbook).all()
+		items = dbsession.query(Guest).all()
 		return render_template('treehole.html', 
 			length=len(items), items=items[::-1]) 
 
