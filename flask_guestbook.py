@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
+from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -12,6 +13,9 @@ from datetime import datetime
 Base = declarative_base()
 
 app = Flask(__name__)
+login_manager = LoginManager()
+app.config['SECRET_KEY'] = 'secret_key'
+login_manager.init_app(app)
 bootstrap = Bootstrap(app)
 
 def DBconnect(Guest_object):
@@ -57,6 +61,8 @@ def tree_hole():
 			_.message=data['message'].encode('utf-8')
 			dbsession.add(_)
 			dbsession.commit()
+			flash('submit successfully!', 'success')  
+			# flash(message, category) into template
 		items = dbsession.query(Guest).all()
 		return render_template('treehole.html', 
 			length=len(items), items=items[::-1]) 
