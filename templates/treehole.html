@@ -2,6 +2,11 @@
 
 {% block title %}Small Nest{% endblock title %}
 
+{% block navbar_index %}
+	<li><a href='/'>Home</a></li>
+	<li class='active'><a href='/treehole'>TreeHole<span class='sr-only'>(current)</span></a></li>
+{% endblock navbar_index %}
+
 {% block page_content %}
 <div class='page-header'>
 	<h2>Tree Hole</h2>
@@ -23,7 +28,7 @@
 		</br>
 		<b>message:</b>
 		<input type='text' name='message' style="width:450px;height:70px">
-		<input type='submit' value='Submit'>
+		<input type='submit' placeholder='your message here' value='Submit'>
 	</form>	
 </div>
 	<footer>
