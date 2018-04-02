@@ -13,16 +13,16 @@
 					<b style='font-size:1.5em'>{{ item.name }}</b>
 					&nbsp;&nbsp;&nbsp;&nbsp;created at
 					<time>{{ item.time }}</time>
-					<blockquote style='background-color:#F0F0F0'>{{ item.message }}</blockquote>
+					<blockquote style='background-color:#FAEBD7'>{{ item.message }}</blockquote>
 				</div>
 			</div>
 			{% endfor %}
 	{% endif %}
 	<form method='POST'>
-		<b>name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><input type='text' name='name'><br>
+		<b>name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><input type='text' name='name'><br>
 		</br>
 		<b>message:</b>
-		<input type='text' name='message' size='100'>
+		<input type='text' name='message' style="width:450px;height:70px">
 		<input type='submit' value='Submit'>
 	</form>	
 </div>
