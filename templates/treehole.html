@@ -18,17 +18,21 @@
 					<b style='font-size:1.5em'>{{ item.name }}</b>
 					&nbsp;&nbsp;&nbsp;&nbsp;created at
 					<time>{{ item.time }}</time>
-					<blockquote style='background-color:#FAEBD7'>{{ item.message }}</blockquote>
+					<blockquote style='background-color:#FAEBD7'>{{ item.message }}</blockquote><br>
+					{% if item.image != None %}
+						<img src="../uploads/{{ item.image }}" height="100px" width="100px" />
+					{% endif %}
 				</div>
 			</div>
 			{% endfor %}
 	{% endif %}
-	<form method='POST'>
+	<form method='POST' enctype="multipart/form-data">
 		<b>name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><input type='text' name='name'><br>
 		</br>
 		<b>message:</b>
-		<input type='text' name='message' style="width:450px;height:70px">
-		<input type='submit' placeholder='your message here' value='Submit'>
+		<textarea name='message' rows="5" cols="50" placeholder="your message here"></textarea>
+		<input type="file" name="image" multiple="multiple">
+		<input type='submit' value='Submit'>
 	</form>	
 </div>
 	<footer>

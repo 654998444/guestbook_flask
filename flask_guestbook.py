@@ -1,8 +1,15 @@
 # -*- encoding: utf-8 -*-
 
+import os
+import config
 from flask import Flask, render_template, request, flash
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+from wtforms import SubmitField
+from flask_uploads import UploadSet, configure_uploads, IMAGES,\
+	patch_request_class
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import MetaData, Table, Column, String,\
@@ -13,10 +20,12 @@ from datetime import datetime
 Base = declarative_base()
 
 app = Flask(__name__)
-login_manager = LoginManager()
-app.config['SECRET_KEY'] = 'secret_key'
-login_manager.init_app(app)
+app.config.from_object(config.BaseConfig)
+photos = UploadSet('photos', IMAGES)
+configure_uploads(app, photos)
+patch_request_class(app)
 bootstrap = Bootstrap(app)
+
 
 def DBconnect(Guest_object):
 	engine = create_engine('mysql+pymysql://root:123456@localhost:3306\
@@ -31,6 +40,7 @@ def DBconnect(Guest_object):
 		Column('id', Integer, primary_key=True),
 		Column('name', Text, nullable=False),
 		Column('message', Text, nullable=False),
+		Column('image', String(64), nullable=True),
 		Column('time', DateTime, default=datetime.now),
 		mysql_default_charset='utf8mb4')  # very very very important in create a table supporting utf8
 
@@ -54,15 +64,20 @@ def hello_world():
 @app.route('/treehole', methods=['GET', 'POST'])
 def tree_hole():
 		dbsession = DBconnect(Guest)
-		if request.method == 'POST':
+		if request.method == 'POST' and 'image' in request.files:
+			
 			data = request.values
 			_ = Guest()
 			_.name=data['name'].encode('utf-8')  # with question if it is essential or not
 			_.message=data['message'].encode('utf-8')
+			filename = photos.save(request.files['image'])
+			file_url = photos.url(filename)
+			_.image=filename
 			dbsession.add(_)
 			dbsession.commit()
-			flash('submit successfully!', 'success')  
-			# flash(message, category) into template
+			flash('submit successfully!', 'success') 
+			# flash(message, category) into template			
+
 		items = dbsession.query(Guest).all()
 		return render_template('treehole.html', 
 			length=len(items), items=items[::-1]) 
