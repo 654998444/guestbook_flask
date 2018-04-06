@@ -18,7 +18,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import MetaData, Table, Column, String,\
 			 Integer, Unicode, DateTime, Text, ForeignKey
-from sqlalchemy.orm import sessionmaker, mapper, clear_mappers
+from sqlalchemy.orm import sessionmaker, mapper, clear_mappers,\
+						relationship
 from datetime import datetime
 
 Base = declarative_base()
@@ -33,7 +34,7 @@ bootstrap = Bootstrap(app)
 
 def DBconnect(Guest_object, Photo_object):
 	engine = create_engine('mysql+pymysql://root:123456@localhost:3306\
-			/guestbook?charset=utf8mb4')  
+			/guestbook?charset=utf8mb4', echo=True)  
 	# engine add sql data with default charset utf8
 
 	# initial table guestbook if not exist 
@@ -47,22 +48,30 @@ def DBconnect(Guest_object, Photo_object):
 		Column('time', DateTime, default=datetime.now),
 		mysql_default_charset='utf8mb4')  # very very very important in create a table supporting utf8
 
-	photos_table = Table(
-		'photos', metadata,
-		Column('photo_id', Integer, primary_key=True),
-		Column('guestbook_id', None, ForeignKey('guestbook.id')),
+	photo_table = Table(
+		'photo', metadata,
+		Column('id', Integer, primary_key=True),
+		Column('guestbook_id', Integer, ForeignKey('guestbook.id')),
 		Column('image', String(128), nullable=True),
 		Column('url', String(256), nullable=True),
 		mysql_default_charset='utf8')
 
-
+#	guest_photo_table = Table(
+#		'guestbook_photo', metadata,
+#		Column('guestbook_id', None, ForeignKey('guestbook.id'), \
+#			primary_key=True),
+#		Column('photo_id', None, ForeignKey('photo.id'), \
+#			primary_key=True))
 
 	metadata.create_all()  
 	# guest_table = Table('guestbook', metadata, autoload=True)  
 	# for guest_table already exists in metadata
 	clear_mappers()  # clear original mapper in pymysql? or somthing else?
-	mapper(Guest_object, guest_table)  # build mapper
-	mapper(Photo_object, photos_table)
+	# build mapper
+	mapper(Photo_object, photo_table)
+	mapper(Guest_object, guest_table, properties=dict(\
+		photos=relationship(Photo, \
+			backref='guestbook'))) 
 
 	DBSession = sessionmaker(bind=engine)
 	session = DBSession()
@@ -103,15 +112,16 @@ def delete_file(filename):
 
 @app.route('/treehole', methods=['GET', 'POST'])
 def tree_hole():
-		dbsession = DBconnect(Guest, Photo)
-		if request.method == 'POST' and 'image' in request.files:
-			
-			data = request.values
-			_ = Guest()
-			_.name=data['name'].encode('utf-8')  # with question if it is essential or not
-			_.message=data['message'].encode('utf-8')
-			dbsession.add(_)
+	dbsession = DBconnect(Guest, Photo)
+	if request.method == 'POST':
+		
+		data = request.values
+		_ = Guest()
+		_.name=data['name'].encode('utf-8')  # with question if it is essential or not
+		_.message=data['message'].encode('utf-8')
+		dbsession.add(_)
 
+		if request.method == 'POST' and 'image' in request.files:
 			for filename in request.files.getlist('image'):
 				__ = Photo()
 				filename = photos.save(filename, \
@@ -122,13 +132,16 @@ def tree_hole():
 				__.image=filename
 				__.url=file_url
 				dbsession.add(__)
-			dbsession.commit()
-			flash('submit successfully!', 'success') 
-			# flash(message, category) into template			
 
-		items = dbsession.query(Guest).join(Guest.Photo).all()
-		return render_template('treehole.html', 
-			length=len(items), items=items[::-1]) 
+		dbsession.commit()
+		flash('submit successfully!', 'success') 
+		# flash(message, category) into template			
+
+	items = dbsession.query(Guest.id, Guest.name, Guest.message, \
+			Guest.time, Photo.image, Photo.url).outerjoin(Photo).all()
+	length = dbsession.query(Guest).count()
+	return render_template('treehole.html', 
+		length=length, items=items[::-1]) 
 
 if __name__ == '__main__':
 		app.run(host='0.0.0.0', port=8080, debug=True, threaded=True)

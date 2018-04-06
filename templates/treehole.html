@@ -12,19 +12,24 @@
 	<h2>Tree Hole</h2>
 	<h6>There are totally {{ length }} records!</h6>
 	{% if length > 0 %}
-			{% for item in items %}
-			<div class='container' name='post'>
-				<div id='{{ item.id }}'>
-					<b style='font-size:1.5em'>{{ item.name }}</b>
-					&nbsp;&nbsp;&nbsp;&nbsp;created at
-					<time>{{ item.time }}</time>
-					<blockquote style='background-color:#FAEBD7'>{{ item.message }}</blockquote><br>
-					{% if item.image != None %}
-						<img src="{{ item.url }}" height="100px" />
-					{% endif %}
-				</div>
-			</div>
-			{% endfor %}
+		<div class='container' name='post'>
+			{% set ix = [0] %}
+			{% for item in items -%}
+				{% if ix[-1] != item.id %}
+					<div id='{{ item.id }}'>
+						<b style='font-size:1.5em'>{{ item.name }}</b>
+						&nbsp;&nbsp;&nbsp;&nbsp;created at
+						<time>{{ item.time }}</time>
+						<blockquote style='background-color:#FAEBD7'>{{ item.message }}</blockquote><br>
+					{% set __ = ix.append(ix[0] + item.id) %}
+					</div>
+				{% endif %}
+
+				{%- if item.image != None -%}
+					<img src="{{ item.url }}" height="100px" />
+				{%- endif -%}
+			{%- endfor %}
+		</div><br>
 	{% endif %}
 	<form method='POST' enctype="multipart/form-data">
 		<b>name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><input type='text' name='name'><br>
