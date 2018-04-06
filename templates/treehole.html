@@ -20,7 +20,7 @@
 					<time>{{ item.time }}</time>
 					<blockquote style='background-color:#FAEBD7'>{{ item.message }}</blockquote><br>
 					{% if item.image != None %}
-						<img src="../uploads/{{ item.image }}" height="100px" width="100px" />
+						<img src="{{ item.url }}" height="100px" />
 					{% endif %}
 				</div>
 			</div>
