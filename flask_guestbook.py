@@ -125,7 +125,8 @@ def tree_hole():
 			for filename in request.files.getlist('image'):
 				__ = Photo()
 				filename = photos.save(filename, \
-					name=str(datetime.now()).replace(' ','')+'.')
+					name=str(datetime.now()).replace(' ','').\
+					replace('.','')+'.')
 				file_url = photos.url(filename)
 				i = dbsession.query(Guest).count()
 				__.guestbook_id = i
@@ -138,7 +139,8 @@ def tree_hole():
 		# flash(message, category) into template			
 
 	items = dbsession.query(Guest.id, Guest.name, Guest.message, \
-			Guest.time, Photo.image, Photo.url).outerjoin(Photo).all()
+			Guest.time, Photo.image, Photo.url).outerjoin(Photo).\
+			order_by(Guest.id).all()
 	length = dbsession.query(Guest).count()
 	return render_template('treehole.html', 
 		length=length, items=items[::-1]) 
