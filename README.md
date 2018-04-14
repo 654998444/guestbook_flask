@@ -12,3 +12,5 @@ $ pip install -r requirements.txt
 ```
 $ python flask_guestbook.py  # default port is 8000
 ```
+# License
+released under the [GPL-2.0](LICENSE)
