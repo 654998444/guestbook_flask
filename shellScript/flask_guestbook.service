@@ -1,0 +1,11 @@
+# should locate at /etc/system/system
+[Unit]
+Description=Guestbook with Flask webframe daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /home/ec2-user/guestbook_flask/shellScript/flask_guestbook.sh
+
+[Install]
+WantedBy=multi-user.target
