@@ -2,7 +2,7 @@
 
 {% block title %}{% endblock title %}
 
-i{% block head %}
+{% block head %}
 	{{ super() }}
 	<link rel="shoutcut icon" 
 	href="{{ url_for('static', filename = 'gong.jpg') }}" 
@@ -74,6 +74,8 @@ i{% block head %}
 	
 {% block page_content %}
 {% endblock page_content %}
+
+	<script type="text/javascript" src="http://ip.chinaz.com/getip.aspx"></script>
 
 {% endblock content%}
 
