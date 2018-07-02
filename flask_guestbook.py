@@ -111,7 +111,7 @@ def delete_file(filename):
 	return redirect(url_for('manage_file'))
 
 @app.route('/nichijou', methods=['GET', 'POST'])
-def nichihou():
+def nichijou():
 	dbsession = DBconnect(Guest, Photo)
 	if request.method == 'POST':
 		

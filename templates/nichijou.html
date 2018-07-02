@@ -9,9 +9,9 @@
 
 {% block page_content %}
 <div class='page-header'>
-	<h2>Nichijou</h2>
-	<img href="{{ url_for('static', filename = 'naganoharaMio2.jpg') }}" height="100px" />
-	<h4>&emsp;&emsp;——我们所过的每个平凡的日常，也许就是连续发生的奇迹。</h4>
+	<h2>Nichijou</h2></br>
+	&emsp;&emsp;<img src="{{ url_for('static', filename = 'naganoharaMio2.jpg') }}" height="100px" />
+	<h4>&emsp;&emsp;&emsp;&emsp;——我们所过的每个平凡的日常，也许就是连续发生的奇迹。</h4>
 	<h6>There are totally {{ length }} records!</h6>
 	{% if length > 0 %}
 		<div class='container' name='post'>
