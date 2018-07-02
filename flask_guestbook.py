@@ -110,8 +110,8 @@ def delete_file(filename):
 	os.remove(file_path)
 	return redirect(url_for('manage_file'))
 
-@app.route('/treehole', methods=['GET', 'POST'])
-def tree_hole():
+@app.route('/nichijou', methods=['GET', 'POST'])
+def nichihou():
 	dbsession = DBconnect(Guest, Photo)
 	if request.method == 'POST':
 		
@@ -142,7 +142,7 @@ def tree_hole():
 			Guest.time, Photo.image, Photo.url).outerjoin(Photo).\
 			order_by(Guest.id).all()
 	length = dbsession.query(Guest).count()
-	return render_template('treehole.html', 
+	return render_template('nichijou.html', 
 		length=length, items=items[::-1]) 
 
 if __name__ == '__main__':
