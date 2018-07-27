@@ -9,7 +9,7 @@
 
 {% block page_content %}
 <div class='page-header'>
-	<div style="width:100%; height:350px; background:url(../static/naganoharaMio.jpg);">  <!-- relative location of the html file -->
+	<div style="width:100%; height:400px; background:url(../static/naganoharaMio.jpg);">  <!-- relative location of the html file -->
 		<font color="0000FF">
 		<h1><strong>Nichijou</strong></h1>
 		</font>
@@ -18,10 +18,7 @@
 		<h5><strong>&emsp;&emsp;&emsp;&emsp;There are totally {{ length }} records!</strong></h5>
 		</font>
 		<iframe src="//player.bilibili.com/player.html?aid=314606&cid=494539&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" ></iframe></br>
-		<audio controls="controls" height="100" width="100" >
-			<source src="../static/naganoharaMio.mp3" type="audio/mp3" />
-		<embed height="100" width="100" src="../static/naganoharaMio.mp3" autostart="0" loop="1" />
-		</audio>
+		<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=559427&auto=0&height=66"></iframe>
 	</div>
 	{% if length > 0 %}
 		<div class='container' name='post'>
