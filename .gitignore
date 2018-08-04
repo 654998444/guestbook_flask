@@ -5,3 +5,4 @@ pycache/
 *.swp
 uploads/
 static/.ipynb_checkpoints
+test/.ipynb_checkpoints/
