@@ -3,10 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>ECharts</title>
-    <script src="../static/scripts/echarts.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.1.0.rc2/echarts-en.js"></script>
 </head>
 <body>
-    <div id="main" style="width:100%;height:400px;"></div>
+    <div id="main" style="width:100%;height:400px;"></div><br>
+    <div id="main1" style="width:100%;height:400px;"></div>
     <script type="text/javascript">
         var myChart = echarts.init(document.getElementById('main'));
 
@@ -52,6 +54,44 @@
             }
         };
         myChart.setOption(option);
+    </script>
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('main1')); 
+        var option = {
+            visualMap: {
+                type: 'continuous',
+                min: 0,
+                max: 350,
+                inRange: {
+                    color: ['#2D5F73', '#538EA6', '#F2D1B3', '#F2B8A2', '#F28C8C']
+                }
+            },
+            series: {
+                type: 'sunburst',
+                data: []    ,
+                radius: [0, '90%'],
+                label: {
+                    rotate: 'radial'
+                }
+            }
+        };
+        myChart.setOption(option);
+        var data = new Array();
+            $.getJSON('data.json', function (result) {
+                //请求成功时执行该函数内容，result即为服务器返回的json对象
+                $.each(result, function (index, item) {  
+                    item.children = [item.children];
+                    data.push(item);
+                });
+                console.log(data)
+                myChart.setOption({
+                    series: {
+                        data: data
+                    }
+                })
+            })   
+        
+
     </script>
 </body>
 </html>

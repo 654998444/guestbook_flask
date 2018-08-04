@@ -4,3 +4,4 @@ env/
 pycache/
 *.swp
 uploads/
+static/.ipynb_checkpoints
