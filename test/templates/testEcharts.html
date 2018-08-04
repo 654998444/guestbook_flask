@@ -26,7 +26,6 @@
                     Math.random()
                 ]);
             }
-            console.log()
             return data;
         };
 
@@ -70,8 +69,9 @@
             },
             series: {
                 type: 'sunburst',
-                data: []    ,
+                data: [],
                 radius: [0, '90%'],
+                sort: 'null',
                 label: {
                     rotate: 'radial'
                 }
@@ -82,15 +82,15 @@
             $.getJSON('data.json', function (result) {
                 //请求成功时执行该函数内容，result即为服务器返回的json对象
                 $.each(result, function (index, item) {  
-                    item.children = item.children;
                     data.push(item);
+                    console.log(data);
                 });
-                console.log(data)
+                console.log(data);
                 myChart1.setOption({
                     series: {
                         data: data
                     }
-                })
+                });
             });
     </script>
     <script type="text/javascript">
@@ -99,6 +99,14 @@
                 trigger: 'item',
                 formatter: "{a} <br/>{b}: {c} ({d}%)"
             },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: []
+            },
+            // dataset: {
+            //     source: []
+            // },
             series: [{
                 name:'Act1',
                 type:'pie',
@@ -115,6 +123,10 @@
                         show: false
                     }
                 },
+                // encode: {
+                //     itemName: 'act1',
+                //     value: 'value'
+                // }
                 data: []
             },
             {
@@ -154,17 +166,22 @@
                 //     }
                 // },
                 data: []
-            }
-        ]
-    }
+                // encode: {
+                //     itemName: 'act2',
+                //     value: 'value'
+                // }
+            }]
+        };
         var myChart2 = echarts.init(document.getElementById('main2')); 
         myChart2.setOption(option);
         var data1 = new Array();
         var data2 = new Array();
+        // var dataset = new Array();
+        // dataset = [['act1','act2','value']]
             $.getJSON('data.json', function (result) {
                 //请求成功时执行该函数内容，result即为服务器返回的json对象
                 $.each(result, function (index, item) { 
-                    var tmp1 = Object();  
+                    var tmp1 = Object(); 
                     var tmp2 = Object();
                     tmp1.name = item.name;
                     tmp1.value = item.children[0].value;
@@ -172,15 +189,21 @@
                     tmp2.value = item.children[0].value;
                     data1.push(tmp1);
                     data2.push(tmp2);
+                    // dataset.push([item.name, item.children[0].name, item.value])
                 });
-                console.log(data)
+                // console.log(dataset)
                 myChart2.setOption({
+                    legend: {
+                        data: data1
+                    },
                     series: [{
                         data: data1
                     },{
                         data: data2
                     }]
-                })
+                    // dataset: {
+                    //     source: dataset
+                });
             });
     </script>
 </body>
