@@ -3,14 +3,16 @@
 import pandas as pd
 import numpy as np
 import json
-from datetime import datetime
+from datetime import datetime, date, timedelta
+
+CSV_PATH = 'templates/data.json'
 
 categories = ['Personal Life', 'Art & Entertainment', 'Chores', 'Social', \
         'No category', 'Transport', 'Professional Life', 'Sport & Fitness', \
         'Health & Hygiene', 'Resting', 'Hobbies']
 colors = ['#FF00FF', '#484891', '#FFDC35', '#5B00AE', '#D0D0D0', '#0080FF', \
         '#AE0000', '#FFA042', '#8CEA00', '#00FFFF', '#7373B9']
-values = np.array([0.5, 0.5, 5, -3, 0, 0, 5, 1, 0, -1, 1.5], dtype=np.float32)
+values = np.array([0.5, 0.5, 5, -3, 0, 0, 5, 1, 0, -.5, 1.5], dtype=np.float32)
 cateDict = dict(zip(categories, colors))
 valuesDict = dict(zip(categories, values))
 
@@ -37,8 +39,6 @@ def generateDailyPoint(df, file_path='templates/dailyPoint.json'):
                                                     df.values))
     with open(file_path, 'w') as f:
         json.dump(tmp, f)
-
-generateDailyPoint(dailyPoint)
 
 def actSplit(strings, index=0):
     if pd.isnull(strings):
@@ -95,18 +95,34 @@ def activityData(df, n=10, type=1):
         'itemStyle': dict(color=df.iloc[i,:].color)}))
     return _
 
+def timeSplit(string):
+    _ = [int(i) for i in string.split('-')]
+    return datetime(_[0],_[1],_[2])
 
-def generateData(start='2018-07-30', end='2018-07-31', 
-    file_path='templates/data.json'):
+def generateData(start=None, end=None, 
+    file_path=CSV_PATH):
+    '''
+    return:
+        df[time in yesterday] as default, or df[time in start day],
+        else df[time in start before end]
+    '''
     global df
-    _ = [int(i) for i in start.split('-')]
-    start = datetime(_[0],_[1],_[2])
-    _ = [int(i) for i in end.split('-')]
-    end = datetime(_[0],_[1],_[2])
+    if start == None:
+        start = (date.today() - timedelta(days=1)).\
+                    strftime('%Y-%m-%d')
+    start = timeSplit(start) if type(start) == str() else start
+    if end == None:
+        end = date.today().strftime('%Y-%m-%d')
+    end = timeSplit(end) if type(end) == str() else end
+
     df_ = df[(df['Time'] >= start) & (df['Time'] < end)]
     df_.loc[:,'act1'] = df_.loc[:,'Activity'].apply(actSplit).values
     df_.loc[:,'act2']= df_.loc[:,'Activity'].apply(actSplit, index=1).values
 
     with open(file_path, 'w') as f:
-        print(activityData(df_, len(df_)))
+        # print(activityData(df_, len(df_)))
         json.dump(activityData(df_, len(df_)), f)
+
+if __name__ == '__main__':
+    generateDailyPoint(dailyPoint)
+    generateData()
