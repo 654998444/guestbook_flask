@@ -1,4 +1,4 @@
-# should locate at /etc/system/system
+# should locate at /etc/systemd/system
 [Unit]
 Description=Guestbook with Flask webframe daemon
 After=network.target
